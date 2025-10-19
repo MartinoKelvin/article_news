@@ -90,17 +90,29 @@ const ArticleManagement: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  // keep the File object (do NOT send base64 in JSON)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
+  // read CSRF token from meta (blade layout already includes it)
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
   // Fetch articles from backend
   useEffect(() => {
-    fetch('/articles')
+    fetch('/articles', {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin',
+    })
       .then(res => res.json())
       .then(data => {
-        // If paginated, use data.data
+        // support both array and paginated responses
         const items = Array.isArray(data) ? data : data.data ?? [];
         setArticles(items);
         setFilteredArticles(items);
+      })
+      .catch(() => {
+        setArticles([]);
+        setFilteredArticles([]);
       });
   }, []);
 
@@ -144,35 +156,48 @@ const ArticleManagement: React.FC = () => {
 
   // Handle upload thumbnail
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] ?? null;
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnailPreview(reader.result as string);
-        setFormData(prev => ({ ...prev, thumbnail: reader.result as string }));
       };
       reader.readAsDataURL(file);
+    } else {
+      setThumbnailPreview(null);
     }
+    setThumbnailFile(file);
+    // do not set base64 into formData.thumbnail; backend will store uploaded file
+    setFormData(prev => ({ ...prev, thumbnail: '' }));
   };
 
   // Handle submit artikel baru
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = {
-      ...formData,
-      // backend expects content, thumbnail (base64 or url), title
-    };
+    const fd = new FormData();
+    fd.append('title', formData.title);
+    fd.append('slug', formData.slug);
+    fd.append('description', formData.description);
+    fd.append('content', formData.content);
+    if (thumbnailFile) fd.append('thumbnail', thumbnailFile);
+
     const res = await fetch('/articles', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': csrf,
+      },
+      credentials: 'same-origin',
+      body: fd, // browser sets Content-Type with boundary
     });
+
     if (res.ok) {
       const newArticle = await res.json();
       setArticles([newArticle, ...articles]);
       resetForm();
     } else {
-      alert('Gagal menyimpan artikel');
+      const err = await res.text();
+      alert('Gagal menyimpan artikel:\n' + err);
     }
   };
 
@@ -184,9 +209,11 @@ const ArticleManagement: React.FC = () => {
       slug: article.slug,
       description: article.description ?? '',
       content: article.content,
-      thumbnail: article.thumbnail,
+      thumbnail: '',
     });
-    setThumbnailPreview(article.thumbnail);
+    // show current thumbnail as preview but do not treat it as upload file
+    setThumbnailPreview(article.thumbnail || null);
+    setThumbnailFile(null);
     setIsEditing(true);
   };
 
@@ -194,14 +221,28 @@ const ArticleManagement: React.FC = () => {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingArticle) return;
-    const payload = {
-      ...formData,
-    };
+
+    // Use FormData and method spoofing so file uploads work for updates
+    const fd = new FormData();
+    fd.append('title', formData.title);
+    fd.append('slug', formData.slug);
+    fd.append('description', formData.description);
+    fd.append('content', formData.content);
+    // append file only if user picked a new file
+    if (thumbnailFile) fd.append('thumbnail', thumbnailFile);
+    // method spoof for Laravel
+    fd.append('_method', 'PUT');
+
     const res = await fetch(`/articles/${editingArticle.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      method: 'POST', // using POST with _method=PUT
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': csrf,
+      },
+      credentials: 'same-origin',
+      body: fd,
     });
+
     if (res.ok) {
       const updated = await res.json();
       setArticles(articles.map(a => (a.id === updated.id ? updated : a)));
@@ -209,18 +250,27 @@ const ArticleManagement: React.FC = () => {
       setEditingArticle(null);
       resetForm();
     } else {
-      alert('Gagal update artikel');
+      const err = await res.text();
+      alert('Gagal update artikel:\n' + err);
     }
   };
 
   // Handle hapus artikel
   const handleDelete = async (id: number) => {
     if (!confirm('Apakah Anda yakin ingin menghapus artikel ini?')) return;
-    const res = await fetch(`/articles/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/articles/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': csrf,
+      },
+      credentials: 'same-origin',
+    });
     if (res.ok) {
       setArticles(articles.filter(a => a.id !== id));
     } else {
-      alert('Gagal menghapus artikel');
+      const err = await res.text();
+      alert('Gagal menghapus artikel:\n' + err);
     }
   };
 

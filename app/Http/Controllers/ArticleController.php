@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -22,15 +23,25 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required',
-            'thumbnail' => 'nullable|string',
+            // accept file upload
+            'thumbnail' => 'nullable|image|max:2048',
         ]);
 
+        $thumbnailPath = null;
+        if ($request->hasFile('thumbnail')) {
+            // store in storage/app/public/thumbnails
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+        } elseif ($request->filled('thumbnail')) {
+            // fallback if frontend sends a path/url
+            $thumbnailPath = $request->thumbnail;
+        }
+
         $article = Article::create([
-            'user_id' => $request->user()->id, // ✅ pakai property
+            'user_id' => $request->user()->id, // use property
             'title' => $request->title,
             'slug' => Str::slug($request->title) . '-' . uniqid(),
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => $thumbnailPath,
             'views' => 0,
         ]);
 
@@ -50,13 +61,25 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required',
+            'thumbnail' => 'nullable|image|max:2048',
         ]);
+
+        $thumbnailPath = $article->thumbnail;
+        if ($request->hasFile('thumbnail')) {
+            // optionally delete old file
+            if ($thumbnailPath && Storage::disk('public')->exists($thumbnailPath)) {
+                Storage::disk('public')->delete($thumbnailPath);
+            }
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+        } elseif ($request->filled('thumbnail')) {
+            $thumbnailPath = $request->thumbnail;
+        }
 
         $article->update([
             'title' => $request->title,
             'slug' => Str::slug($request->title) . '-' . uniqid(),
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => $thumbnailPath,
         ]);
 
         return response()->json($article);
