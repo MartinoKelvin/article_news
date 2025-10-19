@@ -2,7 +2,7 @@ import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function Welcome() {
+export default function Welcome( {articles}) {
     const { auth } = usePage<SharedData>().props;
 
     return (
@@ -62,8 +62,8 @@ export default function Welcome() {
                     <div className="container mx-auto px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-8">
-                                <a href="#" class="flex items-center space-x-2 text-[#38BDF8] hover:text-[#60A5FA] transition">
-                                    <span class="text-xl font-bold">TechNews+</span>
+                                <a href="#" className="flex items-center space-x-2 text-[#38BDF8] hover:text-[#60A5FA] transition">
+                                    <span className="text-xl font-bold">TechNews+</span>
                                 </a>
                                 <div className="hidden md:flex space-x-6">
                                     <Link href="#" className="hover:text-[#38BDF8] transition">Beranda</Link>
@@ -176,85 +176,69 @@ export default function Welcome() {
 
                 {/* Featured Articles */}
                 <section className="py-12 px-4">
-                    <div className="container mx-auto">
-                        <h2 className="text-3xl font-bold mb-8 text-center">
-                            <span className="text-[#38BDF8]">Artikel Terpopuler</span>
-                        </h2>
-                        <div className="grid md:grid-cols-3 gap-6">
-                            {/* Article Card 1 */}
-                            <article className="bg-[#1E293B] rounded-lg overflow-hidden hover-lift cursor-pointer">
-                                <img src="https://picsum.photos/seed/article1/400/250" alt="Article" className="w-full h-48 object-cover" />
-                                <div className="p-6">
-                                    <div className="flex items-center text-sm text-gray-400 mb-3">
-                                        <i className="fas fa-clock mr-2"></i>2 jam lalu
-                                        <span className="mx-2">•</span>
-                                        <i className="fas fa-eye mr-2"></i>1.2K
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-3 hover:text-[#38BDF8] transition">
-                                        React 19: Fitur Terbaru yang Akan Mengubah Cara Kita Develop Web
-                                    </h3>
-                                    <p className="text-gray-300 mb-4">
-                                        Pelajari tentang fitur-fitur groundbreaking dalam React 19 dan bagaimana ini meningkatkan performa aplikasi Anda...
-                                    </p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm text-[#38BDF8]">Programming</span>
-                                        <button className="text-[#38BDF8] hover:text-[#60A5FA] transition">
-                                            Baca Selengkapnya <i className="fas fa-arrow-right ml-1"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </article>
+    <div className="container mx-auto">
+        <h2 className="text-3xl font-bold mb-8 text-center">
+            <span className="text-[#38BDF8]">Artikel Terpopuler</span>
+        </h2>
 
-                            {/* Article Card 2 */}
-                            <article className="bg-[#1E293B] rounded-lg overflow-hidden hover-lift cursor-pointer">
-                                <img src="https://picsum.photos/seed/article2/400/250" alt="Article" className="w-full h-48 object-cover" />
-                                <div className="p-6">
-                                    <div className="flex items-center text-sm text-gray-400 mb-3">
-                                        <i className="fas fa-clock mr-2"></i>5 jam lalu
-                                        <span className="mx-2">•</span>
-                                        <i className="fas fa-eye mr-2"></i>856
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-3 hover:text-[#38BDF8] transition">
-                                        Python vs JavaScript: Mana yang Lebih Baik untuk Data Science?
-                                    </h3>
-                                    <p className="text-gray-300 mb-4">
-                                        Komprehensif perbandingan antara Python dan JavaScript dalam ekosistem data science dan machine learning...
-                                    </p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm text-[#38BDF8]">Tutorial</span>
-                                        <button className="text-[#38BDF8] hover:text-[#60A5FA] transition">
-                                            Baca Selengkapnya <i className="fas fa-arrow-right ml-1"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </article>
-
-                            {/* Article Card 3 */}
-                            <article className="bg-[#1E293B] rounded-lg overflow-hidden hover-lift cursor-pointer">
-                                <img src="https://picsum.photos/seed/article3/400/250" alt="Article" className="w-full h-48 object-cover" />
-                                <div className="p-6">
-                                    <div className="flex items-center text-sm text-gray-400 mb-3">
-                                        <i className="fas fa-clock mr-2"></i>1 hari lalu
-                                        <span className="mx-2">•</span>
-                                        <i className="fas fa-eye mr-2"></i>2.3K
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-3 hover:text-[#38BDF8] transition">
-                                        Kubernetes Best Practices: Cara Deploy Aplikasi dengan Aman
-                                    </h3>
-                                    <p className="text-gray-300 mb-4">
-                                        Panduan lengkap untuk deployment aplikasi di Kubernetes dengan mempertimbangkan security dan scalability...
-                                    </p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm text-[#38BDF8]">DevOps</span>
-                                        <button className="text-[#38BDF8] hover:text-[#60A5FA] transition">
-                                            Baca Selengkapnya <i className="fas fa-arrow-right ml-1"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </article>
+        {/* Pastikan props `articles` dikirim dari controller Laravel */}
+        <div className="grid md:grid-cols-3 gap-6">
+            {articles.length > 0 ? (
+                articles.map((article) => (
+                    <article
+                        key={article.id}
+                        className="bg-[#1E293B] rounded-lg overflow-hidden hover-lift cursor-pointer"
+                    >
+                        <img
+                            src={
+                                article.thumbnail
+                                    ? `/storage/${article.thumbnail}`
+                                    : "https://picsum.photos/seed/default/400/250"
+                            }
+                            alt={article.title}
+                            className="w-full h-48 object-cover"
+                        />
+                        <div className="p-6">
+                            <div className="flex items-center text-sm text-gray-400 mb-3">
+                                <i className="fas fa-clock mr-2"></i>
+                                {new Date(article.created_at).toLocaleDateString("id-ID", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
+                                <span className="mx-2">•</span>
+                                <i className="fas fa-eye mr-2"></i>
+                                {article.views}
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 hover:text-[#38BDF8] transition">
+                                {article.title}
+                            </h3>
+                            <p className="text-gray-300 mb-4 line-clamp-3">
+                                {article.content}
+                            </p>
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-[#38BDF8]">
+                                    {article.user?.name ?? "Admin"}
+                                </span>
+                                <Link
+                                    href={`/articles/${article.slug}`}
+                                    className="text-[#38BDF8] hover:text-[#60A5FA] transition"
+                                >
+                                    Baca Selengkapnya <i className="fas fa-arrow-right ml-1"></i>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </article>
+                ))
+            ) : (
+                <p className="text-center text-gray-400 col-span-3">
+                    Belum ada artikel tersedia.
+                </p>
+            )}
+        </div>
+    </div>
+</section>
+
 
                 {/* Tutorial Section */}
                 <section className="py-12 px-4 bg-[#0F172A]/50">

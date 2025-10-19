@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Article;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ArticleController;
@@ -12,7 +13,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 });
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    // ambil artikel terbaru (eager load user), batasi mis. 6 item
+    $articles = Article::with('user')->latest()->take(6)->get();
+
+    return Inertia::render('welcome', [
+        'articles' => $articles,
+    ]);
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -29,6 +35,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/articles/{article}', [ArticleController::class, 'update']);
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 });
-
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/dashboard/articles', function () {
+        return Inertia::render('Dashboard/ArticleManagement');
+    })->name('dashboard.articles');
+});
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

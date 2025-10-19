@@ -26,7 +26,7 @@ class ArticleController extends Controller
         ]);
 
         $article = Article::create([
-            'user_id' => $request->user()->id(),
+            'user_id' => $request->user()->id, // ✅ pakai property
             'title' => $request->title,
             'slug' => Str::slug($request->title) . '-' . uniqid(),
             'content' => $request->content,
@@ -36,6 +36,7 @@ class ArticleController extends Controller
 
         return response()->json($article, 201);
     }
+
 
     // tampilkan 1 artikel
     public function show(Article $article)
