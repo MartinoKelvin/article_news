@@ -67,7 +67,7 @@ export default function Welcome( {articles}) {
                                 </a>
                                 <div className="hidden md:flex space-x-6">
                                     <Link href="#" className="hover:text-[#38BDF8] transition">Beranda</Link>
-                                    <Link href="#" className="hover:text-[#38BDF8] transition">Tutorial</Link>
+                                    <Link href="/artikel" className="hover:text-[#38BDF8] transition">Artikel</Link>
                                     <Link href="#" className="hover:text-[#38BDF8] transition">Review</Link>
                                     <Link href="#" className="hover:text-[#38BDF8] transition">Event</Link>
                                 </div>

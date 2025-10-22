@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::get('/artikel', function () {
+    return Inertia::render('artikel/index');
+})->name('articles');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
