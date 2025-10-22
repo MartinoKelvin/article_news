@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
+            // allow nullable category_id (create FK later if needed)
+            $table->unsignedBigInteger('category_id')->nullable()->index();
+
             $table->id();
             $table->foreignId('user_id') // penulis/admin
                 ->constrained('users')
