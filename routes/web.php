@@ -28,8 +28,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/artikel', function () {
-    return Inertia::render('artikel/index');
-})->name('articles');
+    $articles = Article::with('user')
+        ->latest()
+        ->take(6)
+        ->get();
+
+    return Inertia::render('artikel/index', [
+        'articles' => $articles,
+    ]);
+})->name('artikel');
+
+Route::get('/contact', function () {
+    return Inertia::render('ContactPage/ContactPage');
+})->name('contact');
+
+Route::get('/tentangkami', function () {
+    return Inertia::render('tentang-kami/index');
+})->name('tentangkami');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
