@@ -38,7 +38,7 @@ export default function ArtikelIndex({ articles }) {
                   <Link
                     key={article.id}
                     href={`/articles/${article.slug}`}
-                    className="group block bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col"
+                    className="group block bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex-col"
                   >
                     {/* Thumbnail */}
                     <div className="aspect-video bg-muted relative overflow-hidden">
