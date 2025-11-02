@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ArticleController extends Controller
 {
@@ -24,7 +25,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required',
             // accept file upload
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $thumbnailPath = null;
@@ -45,15 +46,28 @@ class ArticleController extends Controller
             'views' => 0,
         ]);
 
-        return response()->json($article, 201);
+        return response()->json([
+            'id' => $article->id,
+            'title' => $article->title,
+            'slug' => $article->slug,
+            'content' => $article->content,
+            'thumbnail' => $thumbnailPath ? asset('storage/' . $thumbnailPath) : null,
+            'views' => $article->views,
+            'created_at' => $article->created_at,
+        ], 201);
     }
 
 
     // tampilkan 1 artikel
-    public function show(Article $article)
+    public function show($slug)
     {
-        return response()->json($article);
+        $article = Article::with('user')->where('slug', $slug)->firstOrFail();
+
+        return Inertia::render('artikel/[id]/index', [
+            'article' => $article,
+        ]);
     }
+
 
     // update artikel
     public function update(Request $request, Article $article)
@@ -61,7 +75,7 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required',
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $thumbnailPath = $article->thumbnail;
@@ -82,12 +96,24 @@ class ArticleController extends Controller
             'thumbnail' => $thumbnailPath,
         ]);
 
-        return response()->json($article);
+        return response()->json([
+            'id' => $article->id,
+            'title' => $article->title,
+            'slug' => $article->slug,
+            'content' => $article->content,
+            'thumbnail' => $thumbnailPath ? asset('storage/' . $thumbnailPath) : null,
+            'views' => $article->views,
+            'created_at' => $article->created_at,
+        ]);
     }
 
     // hapus artikel
     public function destroy(Article $article)
     {
+        if ($article->thumbnail && Storage::disk('public')->exists($article->thumbnail)) {
+            Storage::disk('public')->delete($article->thumbnail);
+        }
+
         $article->delete();
         return response()->json(['message' => 'Article deleted']);
     }

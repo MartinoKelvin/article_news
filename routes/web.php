@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+
 Route::get('/artikel', function () {
     $articles = Article::with('user')
         ->latest()
@@ -49,7 +52,7 @@ Route::get('/tentangkami', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/articles', [ArticleController::class, 'store']);
-    Route::get('/articles/{article}', [ArticleController::class, 'show']);
+
     Route::put('/articles/{article}', [ArticleController::class, 'update']);
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 });

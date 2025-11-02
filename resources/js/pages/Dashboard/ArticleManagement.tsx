@@ -463,10 +463,11 @@ const ArticleManagement: React.FC = () => {
                   className={`flex flex-col md:flex-row items-start md:items-center gap-4 border-b border-[#38BDF8]/10 pb-4 last:border-b-0`}
                 >
                   <img
-                    src={article.thumbnail}
+                    src={`/storage/${article.thumbnail}`}
                     alt={article.title}
                     className="w-full md:w-[150px] h-[100px] object-cover rounded-lg"
-                  />
+                    />
+
                   <div className="flex-1">
                     <h3 className="text-lg font-bold mb-1">{article.title}</h3>
                     <p className="text-[#94A3B8] mb-2">{article.description}</p>
