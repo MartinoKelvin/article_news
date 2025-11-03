@@ -63,8 +63,15 @@ class ArticleController extends Controller
     {
         $article = Article::with('user')->where('slug', $slug)->firstOrFail();
 
+        // generate simple math captcha and store answer in session
+        $a = rand(1, 9);
+        $b = rand(1, 9);
+        $question = "{$a} + {$b} = ?";
+        session()->put("captcha_article_{$article->id}", $a + $b);
+
         return Inertia::render('artikel/[id]/index', [
             'article' => $article,
+            'captchaQuestion' => $question,
         ]);
     }
 

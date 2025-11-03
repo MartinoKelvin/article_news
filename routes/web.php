@@ -6,6 +6,11 @@ use App\Models\Article;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+
+Route::get('/articles/{article}/comments', [CommentController::class, 'index']);
+Route::post('/articles/{article}/comments', [CommentController::class, 'store']);
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
