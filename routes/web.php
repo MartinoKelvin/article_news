@@ -65,6 +65,16 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/dashboard/articles', function () {
         return Inertia::render('Dashboard/ArticleManagement');
     })->name('dashboard.articles');
+    Route::get('/dashboard/articles/stats', function () {
+        $articles = \App\Models\Article::all();
+        return response()->json([
+            'total_articles' => $articles->count(),
+            'total_views' => $articles->sum('views'),
+            'today_articles' => $articles
+                ->where('created_at', '>=', now()->startOfDay())
+                ->count(),
+        ]);
+    });
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

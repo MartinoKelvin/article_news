@@ -93,19 +93,17 @@ const ArticleManagement: React.FC = () => {
   // keep the File object (do NOT send base64 in JSON)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   const [stats, setStats] = useState({ total_articles: 0, total_views: 0, today_articles: 0 });
+
   // read CSRF token from meta (blade layout already includes it)
   const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
   // Fetch articles from backend
-  useEffect(() => {
-    fetch('/articles', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
-      credentials: 'same-origin',
-    })
-      .then(res => res.json())
-      .then(data => {
-        // support both array and paginated responses
+    useEffect(() => {
+    fetch("/articles", { headers: { Accept: "application/json" }, credentials: "same-origin" })
+      .then((res) => res.json())
+      .then((data) => {
         const items = Array.isArray(data) ? data : data.data ?? [];
         setArticles(items);
         setFilteredArticles(items);
@@ -114,7 +112,14 @@ const ArticleManagement: React.FC = () => {
         setArticles([]);
         setFilteredArticles([]);
       });
+
+    // 🔹 Fetch statistik dari endpoint Laravel
+    fetch("/dashboard/articles/stats", { headers: { Accept: "application/json" }, credentials: "same-origin" })
+      .then((res) => res.json())
+      .then((data) => setStats(data))
+      .catch(() => setStats({ total_articles: 0, total_views: 0, today_articles: 0 }));
   }, []);
+
 
   // Filter artikel berdasarkan pencarian dan filter
   useEffect(() => {
@@ -302,12 +307,7 @@ const ArticleManagement: React.FC = () => {
     });
   };
 
-  // Hitung statistik
-  const totalArticles = articles.length;
-  const totalViews = articles.reduce((sum, article) => sum + article.views, 0);
-  const todayArticles = articles.filter(article =>
-    new Date(article.created_at).toDateString() === new Date().toDateString()
-  ).length;
+
 
 
   const breadcrumbs: BreadcrumbItem[] = [
@@ -328,21 +328,7 @@ const ArticleManagement: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-center mb-8">Manajemen Artikel</h1>
 
-        {/* Statistik */}
-        <div className="flex flex-wrap gap-4 justify-between mb-8">
-          <div className="flex-1 min-w-[150px] bg-[#1E293B]/50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-[#38BDF8] mb-1">{totalArticles}</div>
-            <p>Total Artikel</p>
-          </div>
-          <div className="flex-1 min-w-[150px] bg-[#1E293B]/50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-[#38BDF8] mb-1">{totalViews}</div>
-            <p>Total Views</p>
-          </div>
-          <div className="flex-1 min-w-[150px] bg-[#1E293B]/50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-[#38BDF8] mb-1">{todayArticles}</div>
-            <p>Artikel Hari Ini</p>
-          </div>
-        </div>
+
 
         {/* Form Artikel */}
         <div className="bg-[#1E293B] rounded-xl mb-6 shadow">

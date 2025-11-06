@@ -2,8 +2,21 @@ import { Link } from "@inertiajs/react"
 import { ChevronRight, Search } from "lucide-react"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
+import { useState } from "react"
 
 export default function ArtikelIndex({ articles }) {
+  const [searchTerm, setSearchTerm] = useState("")
+
+  // Filter artikel berdasarkan judul atau konten
+  const filteredArticles = articles.filter((article) => {
+    const term = searchTerm.toLowerCase()
+    return (
+      article.title.toLowerCase().includes(term) ||
+      (article.content && article.content.toLowerCase().includes(term)) ||
+      (article.category && article.category.toLowerCase().includes(term))
+    )
+  })
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
@@ -23,6 +36,8 @@ export default function ArtikelIndex({ articles }) {
               <input
                 type="text"
                 placeholder="Cari artikel..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
@@ -32,9 +47,9 @@ export default function ArtikelIndex({ articles }) {
         {/* Articles Grid */}
         <section className="py-16 px-6">
           <div className="max-w-6xl mx-auto">
-            {articles.length > 0 ? (
+            {filteredArticles.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-8">
-                {articles.map((article) => (
+                {filteredArticles.map((article) => (
                   <Link
                     key={article.id}
                     href={`/articles/${article.slug}`}
@@ -90,7 +105,7 @@ export default function ArtikelIndex({ articles }) {
               </div>
             ) : (
               <p className="text-center text-muted-foreground">
-                Belum ada artikel tersedia.
+                Tidak ditemukan artikel yang cocok dengan kata kunci "{searchTerm}".
               </p>
             )}
           </div>
@@ -101,3 +116,4 @@ export default function ArtikelIndex({ articles }) {
     </div>
   )
 }
+    
