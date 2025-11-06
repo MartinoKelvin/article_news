@@ -67,7 +67,7 @@ export default function ContactPage() {
                   <label className="block text-sm font-medium text-foreground mb-2">Nama Lengkap</label>
                   <input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Nama Anda"
                     className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>
@@ -75,7 +75,7 @@ export default function ContactPage() {
                   <label className="block text-sm font-medium text-foreground mb-2">Email</label>
                   <input
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="email"
                     className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>

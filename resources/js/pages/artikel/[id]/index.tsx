@@ -1,5 +1,14 @@
 import { Link, usePage } from "@inertiajs/react"
-import { CalendarDays, ArrowLeft, Send } from "lucide-react"
+import {
+  CalendarDays,
+  ArrowLeft,
+  Send,
+  Share2,
+  Facebook,
+  Instagram,
+  MessageCircle,
+  Copy,
+} from "lucide-react"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
 import React, { useEffect, useState } from "react"
@@ -26,7 +35,11 @@ interface Comment {
 }
 
 export default function ArtikelDetail() {
-  const { article, captchaQuestion } = usePage().props as { article: Article; captchaQuestion?: string }
+  const { article, captchaQuestion } = usePage().props as {
+    article: Article
+    captchaQuestion?: string
+  }
+
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState("")
   const [guestName, setGuestName] = useState("")
@@ -34,9 +47,9 @@ export default function ArtikelDetail() {
 
   // Ambil komentar
   useEffect(() => {
-    const csrf = document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute('content') || ''
+    const csrf =
+      document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
+      ""
 
     fetch(`/articles/${article.slug}/comments`, {
       headers: {
@@ -56,9 +69,9 @@ export default function ArtikelDetail() {
     if (!newComment.trim()) return alert("Komentar tidak boleh kosong!")
     if (!captchaAnswer.trim()) return alert("Harap isi captcha")
 
-    const csrf = document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute('content') || ''
+    const csrf =
+      document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
+      ""
 
     const res = await fetch(`/articles/${article.slug}/comments`, {
       method: "POST",
@@ -81,10 +94,19 @@ export default function ArtikelDetail() {
       setNewComment("")
       setGuestName("")
       setCaptchaAnswer("")
-      // catatan: captcha di backend dihapus setelah sukses; untuk soal baru reload halaman atau panggil ulang endpoint show
     } else {
       const err = await res.text()
       alert("Gagal mengirim komentar:\n" + err)
+    }
+  }
+
+  // Fungsi salin link
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      alert("Link artikel berhasil disalin 📋")
+    } catch {
+      alert("Gagal menyalin link")
     }
   }
 
@@ -146,6 +168,58 @@ export default function ArtikelDetail() {
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 
+          {/* Share Section */}
+          <div className="flex flex-wrap items-center gap-3 mt-8">
+            <Share2 className="w-5 h-5 text-primary" />
+            <span className="text-muted-foreground font-semibold">
+              Bagikan ke:
+            </span>
+
+            {/* WhatsApp */}
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(
+                article.title + " - " + window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-all"
+            >
+              <MessageCircle className="w-4 h-4" /> WhatsApp
+            </a>
+
+            {/* Facebook */}
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+            >
+              <Facebook className="w-4 h-4" /> Facebook
+            </a>
+
+            {/* Instagram */}
+            <a
+              href={`https://www.instagram.com/?url=${encodeURIComponent(
+                window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-all"
+            >
+              <Instagram className="w-4 h-4" /> Instagram
+            </a>
+
+            {/* Copy Link */}
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-all"
+            >
+              <Copy className="w-4 h-4" /> Salin Link
+            </button>
+          </div>
+
           {/* Komentar Section */}
           <section className="mt-12 bg-card rounded-xl p-6 shadow-md">
             <h2 className="text-2xl font-bold mb-4 text-primary">
@@ -171,7 +245,9 @@ export default function ArtikelDetail() {
               {/* Captcha */}
               {captchaQuestion && (
                 <div className="flex items-center gap-2">
-                  <label className="text-sm text-muted-foreground w-40">{captchaQuestion}</label>
+                  <label className="text-sm text-muted-foreground w-40">
+                    {captchaQuestion}
+                  </label>
                   <input
                     type="text"
                     placeholder="Jawaban"
@@ -194,13 +270,12 @@ export default function ArtikelDetail() {
             <div className="space-y-6">
               {comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="border-b border-border pb-4"
-                  >
+                  <div key={comment.id} className="border-b border-border pb-4">
                     <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
                       <span className="font-semibold text-foreground">
-                        {comment.user?.name || comment.guest_name || "Anonymous"}
+                        {comment.user?.name ||
+                          comment.guest_name ||
+                          "Anonymous"}
                       </span>
                       <span>
                         {new Date(comment.created_at).toLocaleDateString(
