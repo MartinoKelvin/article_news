@@ -1,11 +1,21 @@
 import { Link } from "@inertiajs/react"
-import { ChevronRight, Search } from "lucide-react"
+import { ChevronRight, Search, ChevronLeft } from "lucide-react"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import LoadingScreen from "@/components/new/LoadingScreen"
 
 export default function ArtikelIndex({ articles }) {
   const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const articlesPerPage = 6
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
 
   // Filter artikel berdasarkan judul atau konten
   const filteredArticles = articles.filter((article) => {
@@ -16,6 +26,42 @@ export default function ArtikelIndex({ articles }) {
       (article.category && article.category.toLowerCase().includes(term))
     )
   })
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage)
+  const indexOfLastArticle = currentPage * articlesPerPage
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage
+  const currentArticles = filteredArticles.slice(indexOfFirstArticle, indexOfLastArticle)
+
+  // Pagination handlers
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const goToPage = (pageNum) => {
+    setCurrentPage(pageNum)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Loading effect
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -41,6 +87,11 @@ export default function ArtikelIndex({ articles }) {
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
+
+            {/* Debug Info - Hapus setelah testing */}
+            <div className="mt-4 text-sm text-muted-foreground">
+              Total Artikel: {filteredArticles.length} | Total Halaman: {totalPages} | Halaman Saat Ini: {currentPage}
+            </div>
           </div>
         </section>
 
@@ -48,61 +99,110 @@ export default function ArtikelIndex({ articles }) {
         <section className="py-16 px-6">
           <div className="max-w-6xl mx-auto">
             {filteredArticles.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-8">
-                {filteredArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/articles/${article.slug}`}
-                    className="group block bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex-col"
-                  >
-                    {/* Thumbnail */}
-                    <div className="aspect-video bg-muted relative overflow-hidden">
-                      <img
-                        src={
-                          article.thumbnail
-                            ? `/storage/${article.thumbnail}`
-                            : article.image || "/placeholder.svg"
-                        }
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
+              <>
+                <div className="grid md:grid-cols-2 gap-8">
+                  {currentArticles.map((article) => (
+                    <Link
+                      key={article.id}
+                      href={`/articles/${article.slug}`}
+                      className="group  bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col"
+                    >
+                      {/* Thumbnail */}
+                      <div className="aspect-video bg-muted relative overflow-hidden">
+                        <img
+                          src={
+                            article.thumbnail
+                              ? `/storage/${article.thumbnail}`
+                              : article.image || "/placeholder.svg"
+                          }
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
 
-                    {/* Card Content */}
-                    <div className="p-6 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-3">
-                          <span className="text-xs font-semibold text-primary uppercase">
-                            {article.category ?? "Umum"}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(article.created_at).toLocaleDateString("id-ID", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </span>
+                      {/* Card Content */}
+                      <div className="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="text-xs font-semibold text-primary uppercase">
+                              {article.category ?? "Teknologi"}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(article.created_at).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </div>
+
+                          <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {article.excerpt ??
+                              (article.content
+                                ? article.content.replace(/<[^>]*>?/gm, "").slice(0, 100) + "..."
+                                : "Baca artikel selengkapnya.")}
+                          </p>
                         </div>
 
-                        <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {article.excerpt ??
-                            (article.content
-                              ? article.content.replace(/<[^>]*>?/gm, "").slice(0, 100) + "..."
-                              : "Baca artikel selengkapnya.")}
-                        </p>
+                        <div className="flex items-center gap-2 text-primary mt-4">
+                          <span className="text-sm font-medium">Baca Selengkapnya</span>
+                          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
+                    </Link>
+                  ))}
+                </div>
 
-                      <div className="flex items-center gap-2 text-primary mt-4">
-                        <span className="text-sm font-medium">Baca Selengkapnya</span>
-                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </div>
+                {/* Pagination Controls - Show only if more than 1 page */}
+                {totalPages > 1 && (
+                  <div className="mt-12 flex flex-col items-center gap-6">
+                    {/* Main Pagination */}
+                    <div className="flex justify-center items-center gap-4">
+                      <button
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        <span>Sebelumnya</span>
+                      </button>
+
+                      <span className="flex items-center px-4 py-2 bg-card border border-border rounded-lg font-medium">
+                        Halaman {currentPage} dari {totalPages}
+                      </span>
+
+                      <button
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+                      >
+                        <span>Selanjutnya</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
-                  </Link>
-                ))}
-              </div>
+
+                    {/* Page Numbers */}
+                    <div className="flex gap-2">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => goToPage(pageNum)}
+                          className={`w-10 h-10 rounded-lg border transition-colors ${
+                            currentPage === pageNum
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'bg-card border-border hover:bg-accent'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <p className="text-center text-muted-foreground">
                 Tidak ditemukan artikel yang cocok dengan kata kunci "{searchTerm}".
@@ -116,4 +216,3 @@ export default function ArtikelIndex({ articles }) {
     </div>
   )
 }
-    

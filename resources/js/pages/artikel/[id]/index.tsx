@@ -128,7 +128,7 @@ export default function ArtikelDetail() {
           {/* Header */}
           <div className="mb-8">
             <span className="text-sm font-semibold text-primary uppercase">
-              {article.category ?? "Umum"}
+              {article.category ?? "Teknologi"}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               {article.title}

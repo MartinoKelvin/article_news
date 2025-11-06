@@ -38,7 +38,6 @@ Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articl
 Route::get('/artikel', function () {
     $articles = Article::with('user')
         ->latest()
-        ->take(6)
         ->get();
 
     return Inertia::render('artikel/index', [

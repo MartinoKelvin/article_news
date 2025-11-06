@@ -9,6 +9,19 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
+            
+            <img
+    src="/logo-light.png"
+    alt="TechNews Logo"
+    className="w-16 h-16 block dark:hidden transition-all"
+  />
+
+  {/* Logo untuk Dark Mode */}
+  <img
+    src="/logo-dark.png"
+    alt="TechNews Logo"
+    className="w-16 h-16 hidden dark:block transition-all"
+  />
             <h4 className="font-semibold text-foreground mb-4">TechNews</h4>
             <p className="text-sm text-muted-foreground">
               Portal berita dan analisis teknologi terkini di Asia Tenggara.

@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/new/ThemeToggle";
 
+
 export default function Navbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -13,10 +14,19 @@ export default function Navbar() {
 		<header className="border-b border-border bg-background sticky top-0 z-50">
 			<div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
 				{/* Logo + Brand */}
-				<div className="flex items-center gap-2">
-					<div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-						<span className="text-primary-foreground font-bold text-lg">T</span>
-					</div>
+				<div className="flex items-center ">
+					<img
+    src="/logo-light.png"
+    alt="TechNews Logo"
+    className="w-16 h-16 block dark:hidden transition-all"
+  />
+
+  {/* Logo untuk Dark Mode */}
+  <img
+    src="/logo-dark.png"
+    alt="TechNews Logo"
+    className="w-16 h-16 hidden dark:block transition-all"
+  />
 					<Link
 						href="/" // Changed 'to' to 'href'
 						className="text-xl font-bold text-foreground hover:text-primary transition-colors"

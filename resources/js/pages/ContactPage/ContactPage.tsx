@@ -3,9 +3,28 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
+import { useEffect } from "react"
+import { useState } from "react"
+import LoadingScreen from "@/components/new/LoadingScreen"
+
 
 
 export default function ContactPage() {
+      const [isLoading, setIsLoading] = useState(true)
+
+      useEffect(() => {
+          const timer = setTimeout(() => setIsLoading(false), 1000)
+          return () => clearTimeout(timer)
+        }, [])
+
+      if (isLoading) {
+          return (
+            <>
+            <LoadingScreen />
+            </>
+          )
+        }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />

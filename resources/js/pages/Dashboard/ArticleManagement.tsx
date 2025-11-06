@@ -324,170 +324,165 @@ const ArticleManagement: React.FC = () => {
   ];
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-    <div className="bg-[#0F172A] text-[#F8FAFC] min-h-screen py-8">
-      <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-center mb-8">Manajemen Artikel</h1>
+    <div className="bg-background text-foreground min-h-screen py-8 transition-colors duration-300">
+  <div className="max-w-5xl mx-auto px-4">
+    <h1 className="text-3xl font-bold text-center mb-8 text-primary">
+      Manajemen Artikel
+    </h1>
 
 
 
         {/* Form Artikel */}
-        <div className="bg-[#1E293B] rounded-xl mb-6 shadow">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold mb-5">{isEditing ? 'Edit Artikel' : 'Tambah Artikel Baru'}</h2>
-            <form onSubmit={isEditing ? handleUpdate : handleSubmit} className="space-y-5">
-              <div>
-                <label className="block mb-2 font-medium">Judul Artikel</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg bg-[#1e293b] border border-[#38BDF8]/30 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2 font-medium">Slug</label>
-                <div className="flex items-center">
-                  <span className="mr-2 text-[#94A3B8]">/artikel/</span>
+       <div className="bg-card border border-border rounded-xl mb-6 shadow-sm">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-5">{isEditing ? 'Edit Artikel' : 'Tambah Artikel Baru'}</h2>
+              <form onSubmit={isEditing ? handleUpdate : handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block mb-2 font-medium">Judul Artikel</label>
                   <input
-                    type="text"
-                    name="slug"
-                    value={formData.slug}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg bg-[#1e293b] border border-[#38BDF8]/30 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]"
-                    required
-                  />
+                    type="text" name="title" value={formData.title} onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/50" required />
                 </div>
-              </div>
-              <div>
-                <label className="block mb-2 font-medium">Deskripsi</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg bg-[#1e293b] border border-[#38BDF8]/30 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8] min-h-[80px]"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2 font-medium">Konten Artikel</label>
-                <textarea
-                  name="content"
-                  value={formData.content}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg bg-[#1e293b] border border-[#38BDF8]/30 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8] min-h-[120px]"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2 font-medium">Thumbnail</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleThumbnailChange}
-                  className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#38BDF8]/10 file:text-[#38BDF8] hover:file:bg-[#38BDF8]/20"
-                />
-                {thumbnailPreview && (
-                  <img
-                    src={thumbnailPreview}
-                    alt="Thumbnail preview"
-                    className="mt-3 rounded-lg max-w-xs max-h-[150px] border border-[#38BDF8]/30"
-                  />
-                )}
-              </div>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetForm();
-                    setIsEditing(false);
-                    setEditingArticle(null);
-                  }}
-                  className="px-5 py-2 rounded-lg border border-[#38BDF8] text-[#38BDF8] bg-transparent hover:bg-[#38BDF8] hover:text-white transition"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className={`px-5 py-2 rounded-lg font-semibold transition ${isEditing ? 'bg-[#10B981] text-white hover:bg-[#059669]' : 'bg-[#38BDF8] text-white hover:bg-[#60A5FA]'}`}
-                >
-                  {isEditing ? 'Update Artikel' : 'Simpan Artikel'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Daftar Artikel */}
-        <div className="bg-[#1E293B] rounded-xl shadow">
-          <div className="flex flex-col md:flex-row md:items-center justify-between px-6 py-4 border-b border-[#38BDF8]/10">
-            <h2 className="text-lg font-semibold mb-3 md:mb-0">Daftar Artikel</h2>
-            <div className="flex gap-2 w-full md:w-auto">
-              <input
-                type="text"
-                placeholder="Cari artikel..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-4 py-2 rounded-lg bg-[#1e293b] border border-[#38BDF8]/30 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]"
-              />
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#38BDF8] text-[#38BDF8] hover:bg-[#38BDF8] hover:text-white transition"
-                onClick={toggleFilter}
-                type="button"
-              >
-                <FaFilter />
-                {filter === 'all' ? 'Semua' : filter === 'today' ? 'Hari Ini' : 'Populer'}
-              </button>
+                <div>
+                  <label className="block mb-2 font-medium">Slug</label>
+                  <div className="flex items-center">
+                    <span className="mr-2 text-muted-foreground">/artikel/</span>
+                    <input
+                      type="text" name="slug" value={formData.slug} onChange={handleInputChange}
+                      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/50" required />
+                  </div>
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">Deskripsi</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground min-h-[80px] focus:ring-2 focus:ring-primary/50" />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">Konten Artikel</label>
+                  <textarea name="content" value={formData.content} onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground min-h-[120px] focus:ring-2 focus:ring-primary/50" />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">Thumbnail</label>
+                  <input type="file" accept="image/*" onChange={handleThumbnailChange}
+                    className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-secondary file:text-foreground hover:file:bg-accent transition" />
+                  {thumbnailPreview && <img src={thumbnailPreview} alt="Preview"
+                    className="mt-3 rounded-lg max-w-xs max-h-[150px] border border-border" />}
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button type="button" onClick={() => { resetForm(); setIsEditing(false); }}
+                    className="px-5 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition">
+                    Batal
+                  </button>
+                  <button type="submit"
+                    className="px-5 py-2 rounded-lg font-semibold bg-primary text-primary-foreground hover:opacity-90 transition">
+                    {isEditing ? 'Update Artikel' : 'Simpan Artikel'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-          <div className="p-4 space-y-4">
-            {filteredArticles.length > 0 ? (
-              filteredArticles.map((article) => (
-                <div
-                  key={article.id}
-                  className={`flex flex-col md:flex-row items-start md:items-center gap-4 border-b border-[#38BDF8]/10 pb-4 last:border-b-0`}
-                >
-                  <img
-                    src={`/storage/${article.thumbnail}`}
-                    alt={article.title}
-                    className="w-full md:w-[150px] h-[100px] object-cover rounded-lg"
-                    />
 
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold mb-1">{article.title}</h3>
-                    <p className="text-[#94A3B8] mb-2">{article.description}</p>
-                    <span className="inline-block bg-[#38BDF8]/20 text-[#38BDF8] px-3 py-1 rounded-full text-xs font-medium mb-2">/artikel/{article.slug}</span>
-                    <div className="flex flex-wrap gap-4 text-sm text-[#94A3B8] mt-2">
-                      <span className="flex items-center gap-1"><FaEye className="text-[#38BDF8]" />{article.views}</span>
-                      <span className="flex items-center gap-1"><FaCalendar className="text-[#38BDF8]" />{formatDate(article.created_at)}</span>
-                      <span className="flex items-center gap-1"><FaUser className="text-[#38BDF8]" />Admin</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 mt-2 md:mt-0">
-                    <button
-                      onClick={() => handleEdit(article)}
-                      className="flex items-center gap-1 px-3 py-2 rounded-lg border border-[#38BDF8] text-[#38BDF8] hover:bg-[#38BDF8] hover:text-white text-sm transition"
-                    >
-                      <FaEdit /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(article.id)}
-                      className="flex items-center gap-1 px-3 py-2 rounded-lg border border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white text-sm transition"
-                    >
-                      <FaTrash /> Hapus
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center py-16 text-[#94A3B8]">
-                <FaFileAlt className="text-5xl mb-3 text-[#38BDF8]" />
-                <p>Belum ada artikel yang sesuai dengan pencarian atau filter.</p>
-              </div>
-            )}
+
+        {/* Daftar Artikel */}
+        {/* Daftar Artikel */}
+<div className="bg-card rounded-xl shadow border border-border">
+  <div className="flex flex-col md:flex-row md:items-center justify-between px-6 py-4 border-b border-border/60">
+    <h2 className="text-lg font-semibold mb-3 md:mb-0 text-foreground">
+      Daftar Artikel
+    </h2>
+
+    {/* 🔍 Input & Filter */}
+    <div className="flex gap-2 w-full md:w-auto">
+      <input
+        type="text"
+        placeholder="Cari artikel..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="flex-1 px-4 py-2 rounded-lg bg-background border border-border text-foreground focus:ring-2 focus:ring-primary/50 focus:outline-none"
+      />
+      <button
+        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition"
+        onClick={toggleFilter}
+        type="button"
+      >
+        <FaFilter />
+        {filter === 'all' ? 'Semua' : filter === 'today' ? 'Hari Ini' : 'Populer'}
+      </button>
+    </div>
+  </div>
+
+  {/* 🔽 List Artikel */}
+  <div className="p-4 space-y-4">
+    {filteredArticles.length > 0 ? (
+      filteredArticles.map((article) => (
+        <div
+          key={article.id}
+          className="flex flex-col md:flex-row items-start md:items-center gap-4 border-b border-border/50 pb-4 last:border-none"
+        >
+          {/* 🖼️ Thumbnail */}
+          <img
+            src={`/storage/${article.thumbnail}`}
+            alt={article.title}
+            className="w-full md:w-[150px] h-[100px] object-cover rounded-lg border border-border/30"
+          />
+
+          {/* 📄 Konten */}
+          <div className="flex-1">
+            <h3 className="text-lg font-bold mb-1 text-foreground">
+              {article.title}
+            </h3>
+            <p className="text-muted-foreground mb-2">
+              {article.description}
+            </p>
+
+            <span className="inline-block bg-secondary/20 text-secondary-foreground px-3 py-1 rounded-full text-xs font-medium mb-2">
+              /artikel/{article.slug}
+            </span>
+
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mt-2">
+              <span className="flex items-center gap-1">
+                <FaEye className="text-primary" />
+                {article.views}
+              </span>
+              <span className="flex items-center gap-1">
+                <FaCalendar className="text-primary" />
+                {formatDate(article.created_at)}
+              </span>
+              <span className="flex items-center gap-1">
+                <FaUser className="text-primary" />
+                Admin
+              </span>
+            </div>
+          </div>
+
+          {/* ✏️ Tombol Aksi */}
+          <div className="flex gap-2 mt-2 md:mt-0">
+            <button
+              onClick={() => handleEdit(article)}
+              className="flex items-center gap-1 px-3 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-primary-foreground text-sm transition"
+            >
+              <FaEdit /> Edit
+            </button>
+
+            <button
+              onClick={() => handleDelete(article.id)}
+              className="flex items-center gap-1 px-3 py-2 rounded-lg border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground text-sm transition"
+            >
+              <FaTrash /> Hapus
+            </button>
           </div>
         </div>
+      ))
+    ) : (
+      <div className="flex flex-col items-center py-16 text-muted-foreground">
+        <FaFileAlt className="text-5xl mb-3 text-primary" />
+        <p>Belum ada artikel yang sesuai dengan pencarian atau filter.</p>
+      </div>
+    )}
+  </div>
+</div>
+
       </div>
     </div>
     </AppLayout>

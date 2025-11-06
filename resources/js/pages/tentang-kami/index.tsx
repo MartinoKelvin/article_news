@@ -2,33 +2,60 @@ import { Link } from "@inertiajs/react"
 import { Zap, Users, Target, Award } from "lucide-react"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
+import { useState, useEffect } from "react"
+import LoadingScreen from "@/components/new/LoadingScreen"
 
 const teamMembers = [
   {
-    name: "Martino Wijaya",
-    role: "Founder & Chief Editor",
-    bio: "Jurnalis teknologi berpengalaman 10+ tahun, passionate tentang innovation dan future of tech.",
-    image: "/team-member-1.png",
+    name: "Martino Kelvin",
+    role: "Project Manager",
+    bio: "Memimpin pengembangan dan koordinasi tim untuk memastikan visi proyek berjalan dengan lancar.",
+    image: "/cowo.png",
   },
   {
-    name: "Siti Nur Azizah",
-    role: "AI & ML Correspondent",
-    bio: "Expert dalam artificial intelligence dengan background di tech research institutions.",
-    image: "/team-member-2.png",
+    name: "Diva",
+    role: "UI/UX Designer",
+    bio: "Merancang antarmuka yang intuitif dan pengalaman pengguna yang menarik.",
+    image: "/cewek.png",
   },
   {
-    name: "Budi Santoso",
-    role: "Startup & Business Editor",
-    bio: "Entrepreneur dan investor yang memahami ecosystem startup di Asia Tenggara.",
-    image: "/team-member-3.png",
+    name: "Aji",
+    role: "UI/UX Designer",
+    bio: "Bertanggung jawab pada desain visual dan konsistensi estetika aplikasi.",
+    image: "/cowo.png",
   },
   {
-    name: "Clara Wijaya",
-    role: "Cybersecurity Analyst",
-    bio: "Security researcher yang fokus pada digital privacy dan cybersecurity trends.",
-    image: "/team-member-4.png",
+    name: "Ikhsan",
+    role: "Backend Developer",
+    bio: "Mengembangkan logika server, API, dan memastikan keamanan serta performa aplikasi.",
+    image: "/cowo.png",
   },
-]
+  {
+    name: "Prima",
+    role: "Backend Developer",
+    bio: "Menangani integrasi database dan pengelolaan data untuk menjaga kestabilan sistem.",
+    image: "/cowo.png",
+  },
+  {
+    name: "Faiz",
+    role: "Frontend Developer",
+    bio: "Membangun tampilan interaktif dan responsif menggunakan framework modern.",
+    image: "/cowo.png",
+  },
+  {
+    name: "Audy",
+    role: "Frontend Developer",
+    bio: "Berfokus pada performa UI dan pengalaman pengguna di sisi client.",
+    image: "/cewek.png",
+  },
+  {
+    name: "Al-qoriah",
+    role: "Frontend Developer",
+    bio: "Mengimplementasikan desain menjadi komponen dinamis yang mudah digunakan.",
+    image: "/cewek.png",
+  },
+];
+
 
 const values = [
   {
@@ -54,6 +81,21 @@ const values = [
 ]
 
 export default function AboutPage() {
+
+    const [isLoading, setIsLoading] = useState(true)
+
+          useEffect(() => {
+              const timer = setTimeout(() => setIsLoading(false), 1000)
+              return () => clearTimeout(timer)
+            }, [])
+
+          if (isLoading) {
+              return (
+                <>
+                <LoadingScreen />
+                </>
+              )
+            }
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
@@ -145,20 +187,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Ingin Bergabung Dengan Tim?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Kami selalu mencari jurnalis, developer, dan creative professionals yang passionate tentang teknologi.
-            </p>
 
-            {/* Tombol manual pakai Tailwind */}
-
-          </div>
-        </section>
       </main>
 
       <Footer />

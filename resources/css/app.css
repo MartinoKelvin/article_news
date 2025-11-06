@@ -62,104 +62,102 @@
 }
 
 :root {
-  --background: rgb(247, 250, 247);          /* hijau sangat muda */
-  --foreground: rgb(20, 30, 25);             /* teks hijau tua */
+  /* Light Mode - Refined Green Palette */
+  --background: rgb(248, 252, 248);          /* hijau sangat muda, lebih lembut */
+  --foreground: rgb(15, 23, 18);             /* teks hijau tua, lebih kontras */
 
   --card: rgb(255, 255, 255);
-  --card-foreground: rgb(20, 30, 25);
+  --card-foreground: rgb(15, 23, 18);
 
   --popover: rgb(255, 255, 255);
-  --popover-foreground: rgb(20, 30, 25);
+  --popover-foreground: rgb(15, 23, 18);
 
-  --primary: rgb(34, 139, 94);               /* hijau utama */
+  --primary: rgb(16, 120, 72);               /* hijau utama, lebih modern */
   --primary-foreground: rgb(255, 255, 255);
 
-  --secondary: rgb(227, 243, 229);           /* hijau pastel */
-  --secondary-foreground: rgb(34, 70, 50);
+  --secondary: rgb(232, 245, 233);           /* hijau pastel, lebih halus */
+  --secondary-foreground: rgb(30, 60, 45);
 
-  --muted: rgb(235, 243, 236);
-  --muted-foreground: rgb(100, 115, 100);
+  --muted: rgb(241, 248, 242);
+  --muted-foreground: rgb(95, 115, 100);
 
-  --accent: rgb(203, 241, 211);
-  --accent-foreground: rgb(20, 30, 25);
+  --accent: rgb(198, 239, 206);              /* aksen hijau terang */
+  --accent-foreground: rgb(15, 23, 18);
 
-  --destructive: rgb(220, 53, 69);
+  --destructive: rgb(239, 68, 68);          /* merah yang lebih modern */
   --destructive-foreground: rgb(255, 255, 255);
 
-  --border: rgb(214, 230, 216);
-  --input: rgb(214, 230, 216);
-  --ring: rgb(176, 208, 182);
+  --border: rgb(217, 234, 219);
+  --input: rgb(217, 234, 219);
+  --ring: rgb(16, 120, 72);
 
-  /* Chart / highlight colors */
-  --chart-1: rgb(46, 204, 113);
-  --chart-2: rgb(39, 174, 96);
-  --chart-3: rgb(155, 233, 168);
-  --chart-4: rgb(26, 188, 156);
-  --chart-5: rgb(72, 201, 176);
+  /* Chart / highlight colors - lebih harmonis */
+  --chart-1: rgb(16, 120, 72);
+  --chart-2: rgb(52, 211, 153);
+  --chart-3: rgb(110, 231, 183);
+  --chart-4: rgb(34, 197, 94);
+  --chart-5: rgb(16, 185, 129);
 
   --radius: 0.625rem;
 
-  /* Sidebar */
-  --sidebar: rgb(240, 247, 242);
-  --sidebar-foreground: rgb(28, 45, 33);
-  --sidebar-primary: rgb(34, 139, 94);
+  /* Sidebar - lebih konsisten dengan tema */
+  --sidebar: rgb(243, 249, 244);
+  --sidebar-foreground: rgb(20, 30, 25);
+  --sidebar-primary: rgb(16, 120, 72);
   --sidebar-primary-foreground: rgb(255, 255, 255);
-  --sidebar-accent: rgb(203, 241, 211);
-  --sidebar-accent-foreground: rgb(20, 30, 25);
-  --sidebar-border: rgb(214, 230, 216);
-  --sidebar-ring: rgb(176, 208, 182);
+  --sidebar-accent: rgb(232, 245, 233);
+  --sidebar-accent-foreground: rgb(15, 23, 18);
+  --sidebar-border: rgb(217, 234, 219);
+  --sidebar-ring: rgb(16, 120, 72);
 }
-
-
 
 .dark {
-  --background: rgb(14, 24, 18);              /* hijau gelap */
-  --foreground: rgb(234, 243, 234);
+  /* Dark Mode - Refined Green Palette */
+  --background: rgb(6, 16, 10);              /* hijau gelap, lebih dalam */
+  --foreground: rgb(230, 245, 233);          /* teks terang, lebih mudah dibaca */
 
-  --card: rgb(20, 33, 25);
-  --card-foreground: rgb(234, 243, 234);
+  --card: rgb(12, 22, 16);
+  --card-foreground: rgb(230, 245, 233);
 
-  --popover: rgb(20, 33, 25);
-  --popover-foreground: rgb(234, 243, 234);
+  --popover: rgb(12, 22, 16);
+  --popover-foreground: rgb(230, 245, 233);
 
-  --primary: rgb(46, 204, 113);
-  --primary-foreground: rgb(14, 24, 18);
+  --primary: rgb(52, 211, 153);              /* hijau terang untuk mode gelap */
+  --primary-foreground: rgb(6, 16, 10);
 
-  --secondary: rgb(33, 54, 40);
-  --secondary-foreground: rgb(234, 243, 234);
+  --secondary: rgb(24, 36, 28);
+  --secondary-foreground: rgb(230, 245, 233);
 
-  --muted: rgb(33, 54, 40);
-  --muted-foreground: rgb(156, 173, 156);
+  --muted: rgb(24, 36, 28);
+  --muted-foreground: rgb(140, 165, 145);
 
-  --accent: rgb(39, 68, 52);
-  --accent-foreground: rgb(234, 243, 234);
+  --accent: rgb(32, 51, 40);
+  --accent-foreground: rgb(230, 245, 233);
 
-  --destructive: rgb(239, 68, 68);
-  --destructive-foreground: rgb(255, 255, 255);
+  --destructive: rgb(248, 113, 113);        /* merah yang lebih terang untuk mode gelap */
+  --destructive-foreground: rgb(6, 16, 10);
 
-  --border: rgb(40, 60, 46);
-  --input: rgb(40, 60, 46);
-  --ring: rgb(72, 100, 78);
+  --border: rgb(32, 51, 40);
+  --input: rgb(32, 51, 40);
+  --ring: rgb(52, 211, 153);
 
-  /* Chart / highlight colors */
-  --chart-1: rgb(72, 201, 176);
-  --chart-2: rgb(46, 204, 113);
-  --chart-3: rgb(155, 233, 168);
-  --chart-4: rgb(26, 188, 156);
-  --chart-5: rgb(39, 174, 96);
+  /* Chart / highlight colors - lebih harmonis dengan mode gelap */
+  --chart-1: rgb(52, 211, 153);
+  --chart-2: rgb(110, 231, 183);
+  --chart-3: rgb(16, 185, 129);
+  --chart-4: rgb(34, 197, 94);
+  --chart-5: rgb(16, 120, 72);
 
-  /* Sidebar */
-  --sidebar: rgb(20, 33, 25);
-  --sidebar-foreground: rgb(234, 243, 234);
-  --sidebar-primary: rgb(46, 204, 113);
-  --sidebar-primary-foreground: rgb(14, 24, 18);
-  --sidebar-accent: rgb(33, 54, 40);
-  --sidebar-accent-foreground: rgb(234, 243, 234);
-  --sidebar-border: rgb(40, 60, 46);
-  --sidebar-ring: rgb(72, 100, 78);
+  /* Sidebar - lebih konsisten dengan tema gelap */
+  --sidebar: rgb(12, 22, 16);
+  --sidebar-foreground: rgb(230, 245, 233);
+  --sidebar-primary: rgb(52, 211, 153);
+  --sidebar-primary-foreground: rgb(6, 16, 10);
+  --sidebar-accent: rgb(24, 36, 28);
+  --sidebar-accent-foreground: rgb(230, 245, 233);
+  --sidebar-border: rgb(32, 51, 40);
+  --sidebar-ring: rgb(52, 211, 153);
 }
-
-
 
 @layer base {
     * {
