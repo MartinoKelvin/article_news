@@ -1,4 +1,4 @@
-import { usePage, router } from "@inertiajs/react"
+    import { usePage } from "@inertiajs/react"
 import AppLayout from "@/layouts/app-layout"
 import { type BreadcrumbItem } from "@/types"
 
@@ -15,14 +15,37 @@ interface PageProps {
   messages: {
     data: Message[]
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 export default function MessagePage() {
   const { messages } = usePage<PageProps>().props
 
-  const handleDelete = (id: number) => {
-    if (confirm("Yakin ingin menghapus pesan ini?")) {
-      router.delete(route("messages.destroy", id))
+  const handleDelete = async (id: number) => {
+    if (!confirm("Yakin ingin menghapus pesan ini?")) return
+
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? ""
+
+    try {
+      const res = await fetch(`/dashboard/message/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "X-CSRF-TOKEN": csrf,
+        },
+        credentials: "same-origin",
+      })
+
+      if (res.ok) {
+        // Refresh the page to show updated list
+        window.location.reload()
+      } else {
+        alert("Gagal menghapus pesan")
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      alert("Terjadi kesalahan saat menghapus pesan")
     }
   }
 

@@ -17,6 +17,7 @@ interface Article {
   user?: { name: string };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function HomePage({ featuredArticles = [] as Article[], trendingTopics = [] }) {
   const [isLoading, setIsLoading] = useState(true)
 

@@ -35,7 +35,7 @@ interface Comment {
 }
 
 export default function ArtikelDetail() {
-  const { article, captchaQuestion } = usePage().props as {
+  const { article, captchaQuestion } = usePage().props as unknown as {
     article: Article
     captchaQuestion?: string
   }

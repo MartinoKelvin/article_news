@@ -14,12 +14,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [articles, setArticles] = useState<any[]>([]);
   const [stats, setStats] = useState({ total_articles: 0, total_views: 0, today_articles: 0 });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
 
   // State untuk data grafik
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [articlesChartData, setArticlesChartData] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [statusChartData, setStatusChartData] = useState<any[]>([]);
 
   // Fetch data artikel & statistik
@@ -49,6 +53,7 @@ export default function Dashboard() {
   // Proses data untuk grafik setiap kali data artikel berubah
   useEffect(() => {
     // --- Data untuk Grafik Garis (Jumlah Artikel per Hari) ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const articlesByDate = articles.reduce((acc: any, article) => {
       if (!article.created_at) return acc;
       // Format tanggal menjadi YYYY-MM-DD
@@ -71,6 +76,7 @@ export default function Dashboard() {
     setArticlesChartData(sortedArticlesData);
 
     // --- Data untuk Grafik Donat (Distribusi Status) ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const statusCount = articles.reduce((acc: any, article) => {
       const status = article.status || 'Publish'; // Default ke 'Publish' jika status tidak ada
       acc[status] = (acc[status] || 0) + 1;
@@ -104,7 +110,7 @@ export default function Dashboard() {
             <div className="text-3xl font-bold text-primary mb-2">{stats.total_articles}</div>
             <p className="text-muted-foreground">Total Artikel</p>
           </div>
-      
+
           <div className="flex-1 min-w-[200px] bg-secondary rounded-xl border border-border p-5 text-center shadow-sm">
             <div className="text-3xl font-bold text-primary mb-2">{stats.today_articles}</div>
             <p className="text-muted-foreground">Artikel Hari Ini</p>

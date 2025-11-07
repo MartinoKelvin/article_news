@@ -41,7 +41,11 @@ class MessageController extends Controller
     // Hapus pesan
     public function destroy(Message $message)
     {
-        $message->delete();
-        return back()->with('success', 'Pesan berhasil dihapus!');
+        try {
+            $message->delete();
+            return response()->json(['message' => 'Pesan berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus pesan'], 500);
+        }
     }
 }

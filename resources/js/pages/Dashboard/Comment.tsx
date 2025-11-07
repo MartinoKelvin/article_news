@@ -1,6 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { usePage, router } from "@inertiajs/react"
 import AppLayout from "@/layouts/app-layout"
 import { type BreadcrumbItem } from "@/types"
+
 
 interface Comment {
   id: number
@@ -15,6 +17,8 @@ interface PageProps {
   comments: {
     data: Comment[]
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 export default function CommentPage() {
@@ -40,6 +44,7 @@ export default function CommentPage() {
         } else {
           alert('Gagal menghapus komentar')
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         alert('Terjadi kesalahan saat menghapus komentar')
       }

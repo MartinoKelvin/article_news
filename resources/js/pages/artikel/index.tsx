@@ -5,20 +5,39 @@ import Footer from "@/components/new/Footer"
 import { useState, useEffect } from "react"
 import LoadingScreen from "@/components/new/LoadingScreen"
 
-export default function ArtikelIndex({ articles }) {
+// ✅ 1. Definisikan tipe data artikel
+interface Article {
+  id: number
+  slug: string
+  title: string
+  content?: string
+  excerpt?: string
+  category?: string
+  image?: string
+  thumbnail?: string
+  created_at: string
+}
+
+// ✅ 2. Tipe props untuk komponen
+interface ArtikelIndexProps {
+  articles: Article[]
+}
+
+// ✅ 3. Tambahkan tipe pada parameter props
+export default function ArtikelIndex({ articles }: ArtikelIndexProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
 
   const articlesPerPage = 6
 
-  // Reset page when search changes
+  // Reset halaman setiap kali pencarian berubah
   useEffect(() => {
     setCurrentPage(1)
   }, [searchTerm])
 
-  // Filter artikel berdasarkan judul atau konten
-  const filteredArticles = articles.filter((article) => {
+  // ✅ Tambahkan tipe untuk parameter "article"
+  const filteredArticles = articles.filter((article: Article) => {
     const term = searchTerm.toLowerCase()
     return (
       article.title.toLowerCase().includes(term) ||
@@ -27,33 +46,34 @@ export default function ArtikelIndex({ articles }) {
     )
   })
 
-  // Calculate pagination
+  // Hitung pagination
   const totalPages = Math.ceil(filteredArticles.length / articlesPerPage)
   const indexOfLastArticle = currentPage * articlesPerPage
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage
   const currentArticles = filteredArticles.slice(indexOfFirstArticle, indexOfLastArticle)
 
-  // Pagination handlers
+  // Fungsi navigasi halaman
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
 
-  const goToPage = (pageNum) => {
+  // ✅ Tambahkan tipe untuk parameter "pageNum"
+  const goToPage = (pageNum: number) => {
     setCurrentPage(pageNum)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  // Loading effect
+  // Efek loading
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000)
     return () => clearTimeout(timer)
@@ -88,7 +108,6 @@ export default function ArtikelIndex({ articles }) {
               />
             </div>
 
-            {/* Debug Info - Hapus setelah testing */}
             <div className="mt-4 text-sm text-muted-foreground">
               Total Artikel: {filteredArticles.length} | Total Halaman: {totalPages} | Halaman Saat Ini: {currentPage}
             </div>
@@ -101,11 +120,11 @@ export default function ArtikelIndex({ articles }) {
             {filteredArticles.length > 0 ? (
               <>
                 <div className="grid md:grid-cols-2 gap-8">
-                  {currentArticles.map((article) => (
+                  {currentArticles.map((article: Article) => (
                     <Link
                       key={article.id}
                       href={`/articles/${article.slug}`}
-                      className="group  bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col"
+                      className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col"
                     >
                       {/* Thumbnail */}
                       <div className="aspect-video bg-muted relative overflow-hidden">
@@ -156,10 +175,9 @@ export default function ArtikelIndex({ articles }) {
                   ))}
                 </div>
 
-                {/* Pagination Controls - Show only if more than 1 page */}
+                {/* Pagination Controls */}
                 {totalPages > 1 && (
                   <div className="mt-12 flex flex-col items-center gap-6">
-                    {/* Main Pagination */}
                     <div className="flex justify-center items-center gap-4">
                       <button
                         onClick={handlePrevPage}
@@ -184,16 +202,15 @@ export default function ArtikelIndex({ articles }) {
                       </button>
                     </div>
 
-                    {/* Page Numbers */}
                     <div className="flex gap-2">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum: number) => (
                         <button
                           key={pageNum}
                           onClick={() => goToPage(pageNum)}
                           className={`w-10 h-10 rounded-lg border transition-colors ${
                             currentPage === pageNum
-                              ? 'bg-primary text-primary-foreground border-primary'
-                              : 'bg-card border-border hover:bg-accent'
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-card border-border hover:bg-accent"
                           }`}
                         >
                           {pageNum}

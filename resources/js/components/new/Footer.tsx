@@ -66,19 +66,19 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4">Ikuti Kami</h4>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://x.com/ITERAOfficial/"
                 className="text-muted-foreground hover:text-primary transition-colors transform hover:scale-110 duration-200"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/himpunan-mahasiswa-informatika-itera/"
                 className="text-muted-foreground hover:text-primary transition-colors transform hover:scale-110 duration-200"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/hmif.itera/"
                 className="text-muted-foreground hover:text-primary transition-colors transform hover:scale-110 duration-200"
               >
                 <Instagram className="w-5 h-5" />
