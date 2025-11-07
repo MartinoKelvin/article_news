@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
-            
+
             <img
     src="/logo-light.png"
     alt="TechNews Logo"
@@ -28,6 +28,9 @@ export default function Footer() {
               Tetap terupdate dengan inovasi terbaru.
             </p>
           </div>
+          <div>
+
+          </div>
 
           {/* Navigasi */}
           <div>
@@ -39,12 +42,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/articles" className="hover:text-foreground transition-colors">
+                <Link href="/artikel" className="hover:text-foreground transition-colors">
                   Artikel
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-foreground transition-colors">
+                <Link href="/tentangkami" className="hover:text-foreground transition-colors">
                   Tentang Kami
                 </Link>
               </li>
@@ -56,16 +59,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Kategori */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Kategori</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">AI & ML</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Gadgets</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Startup</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Cybersecurity</a></li>
-            </ul>
-          </div>
+
 
           {/* Sosial Media */}
           <div>

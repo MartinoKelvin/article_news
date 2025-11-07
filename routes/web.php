@@ -23,11 +23,25 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 });
 
 Route::get('/', function () {
-    // ambil artikel terbaru (eager load user), batasi mis. 6 item
-    $articles = Article::with('user')->latest()->take(6)->get();
+    $articles = Article::with(['user', 'category'])
+        ->latest()
+        ->take(3)
+        ->get()
+        ->map(function ($article) {
+            return [
+                'id' => $article->id,
+                'title' => $article->title,
+                'slug' => $article->slug,
+                'description' => strip_tags(substr($article->content, 0, 150)) . '...',
+                'thumbnail' => $article->thumbnail,
+                'created_at' => $article->created_at,
+                'category' => $article->category?->name ?? 'Uncategorized',
+                'user' => $article->user ? ['name' => $article->user->name] : null,
+            ];
+        });
 
     return Inertia::render('welcome', [
-        'articles' => $articles,
+        'featuredArticles' => $articles,
     ]);
 })->name('home');
 
@@ -69,6 +83,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     Route::get('/dashboard/message', [MessageController::class, 'index'])->name('messages.index');
     Route::delete('/dashboard/message/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+
+
+    Route::get('/dashboard/comment', [CommentController::class, 'dashboard'])->name('comments.dashboard');
+    Route::delete('/dashboard/comment/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     Route::get('/dashboard/articles', function () {
         return Inertia::render('Dashboard/ArticleManagement');

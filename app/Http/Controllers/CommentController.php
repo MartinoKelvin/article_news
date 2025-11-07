@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth; // ✅ tambahkan ini
+use Inertia\Inertia;
 
 
 class CommentController extends Controller
@@ -72,14 +73,22 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
-        if (Auth::check()) {
-            if ($comment->user_id !== Auth::id() && !Auth::user()->isAdmin) {
-                return response()->json(['message' => 'Tidak diizinkan'], 403);
-            }
+        try {
             $comment->delete();
-            return response()->json(['message' => 'Komentar dihapus']);
+            return response()->json(['message' => 'Komentar berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus komentar'], 500);
         }
+    }
 
-        return response()->json(['message' => 'Harus login untuk menghapus komentar'], 401);
+    public function dashboard()
+    {
+        $comments = \App\Models\Comment::with(['article:id,title,slug', 'user:id,name'])
+            ->latest()
+            ->paginate(10);
+
+        return Inertia::render('Dashboard/Comment', [
+            'comments' => $comments,
+        ]);
     }
 }
