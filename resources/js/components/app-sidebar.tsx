@@ -26,6 +26,16 @@ const mainNavItems: NavItem[] = [
         title: 'Articles',
         href: '/dashboard/articles',
         icon: Folder,
+    },
+    {
+        title: 'Messages',
+        href: '/dashboard/message',
+        icon: BookOpen,
+    },
+    {
+        title: 'Comments',
+        href: '/dashboard/Comment',
+        icon: Folder,
     }
 ];
 

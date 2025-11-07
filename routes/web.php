@@ -7,6 +7,11 @@ use App\Models\Article;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ContactController;
+
+Route::post('/contact', [MessageController::class, 'store'])->name('messages.store');
+
 
 Route::get('/articles/{article}/comments', [CommentController::class, 'index']);
 Route::post('/articles/{article}/comments', [CommentController::class, 'store']);
@@ -61,9 +66,15 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 });
 Route::middleware(['auth', 'isAdmin'])->group(function () {
+
+    Route::get('/dashboard/message', [MessageController::class, 'index'])->name('messages.index');
+    Route::delete('/dashboard/message/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+
     Route::get('/dashboard/articles', function () {
         return Inertia::render('Dashboard/ArticleManagement');
     })->name('dashboard.articles');
+
+
     Route::get('/dashboard/articles/stats', function () {
         $articles = \App\Models\Article::all();
         return response()->json([

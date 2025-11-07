@@ -3,118 +3,175 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Navbar from "@/components/new/Navbar"
 import Footer from "@/components/new/Footer"
-import { useEffect } from "react"
-import { useState } from "react"
 import LoadingScreen from "@/components/new/LoadingScreen"
-
-
+import { useEffect, useState } from "react"
 
 export default function ContactPage() {
-      const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    privacy: false,
+  })
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
-      useEffect(() => {
-          const timer = setTimeout(() => setIsLoading(false), 1000)
-          return () => clearTimeout(timer)
-        }, [])
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
-      if (isLoading) {
-          return (
-            <>
-            <LoadingScreen />
-            </>
-          )
-        }
+  if (isLoading) return <LoadingScreen />
+
+  // 🔥 GANTI ke /contact (bukan /contact/submit)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const csrf =
+        document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ?? ""
+
+      const res = await fetch("http://127.0.0.1:8000/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-CSRF-TOKEN": csrf,
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setSuccess(data.message || "Pesan berhasil dikirim!")
+        setFormData({ name: "", email: "", subject: "", message: "", privacy: false })
+      } else {
+        const err = await res.json()
+        setError(err.message || "Terjadi kesalahan, silakan coba lagi.")
+      }
+    } catch {
+      setError("Terjadi kesalahan jaringan. Silakan coba lagi.")
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }))
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero Section */}
+        {/* Hero */}
         <section className="py-16 px-6 border-b border-border">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Hubungi Kami</h1>
             <p className="text-lg text-muted-foreground">
-              Ada pertanyaan atau saran? Kami sangat senang mendengar dari Anda. Silakan hubungi kami melalui form di
-              bawah atau informasi kontak yang tersedia.
+              Ada pertanyaan atau saran? Silakan hubungi kami melalui form di bawah.
             </p>
           </div>
         </section>
 
-        {/* Contact Info Cards */}
+        {/* Contact Info */}
         <section className="py-16 px-6 border-b border-border">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-6 text-center">
-                  <Mail className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-foreground mb-2">Email</h3>
-                  <a href="mailto:contact@technews.id" className="text-primary hover:text-primary/80 transition-colors">
-                    contact@technews.id
-                  </a>
-                </CardContent>
-              </Card>
+          <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-12">
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-6 text-center">
+                <Mail className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-foreground mb-2">Email</h3>
+                <a href="mailto:contact@technews.id" className="text-primary hover:text-primary/80">
+                  contact@technews.id
+                </a>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-6 text-center">
-                  <Phone className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-foreground mb-2">Telepon</h3>
-                  <a href="tel:+62215551234" className="text-primary hover:text-primary/80 transition-colors">
-                    +62 (021) 5551234
-                  </a>
-                </CardContent>
-              </Card>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-6 text-center">
+                <Phone className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-foreground mb-2">Telepon</h3>
+                <a href="tel:+62215551234" className="text-primary hover:text-primary/80">
+                  +62 (021) 5551234
+                </a>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-6 text-center">
-                  <MapPin className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-foreground mb-2">Lokasi</h3>
-                  <p className="text-muted-foreground text-sm">Jakarta, Indonesia</p>
-                </CardContent>
-              </Card>
-            </div>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-6 text-center">
+                <MapPin className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-foreground mb-2">Lokasi</h3>
+                <p className="text-muted-foreground text-sm">Jakarta, Indonesia</p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        {/* Contact Form Section */}
+        {/* Form */}
         <section className="py-16 px-6">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-foreground mb-8">Kirim Pesan</h2>
-            <form className="space-y-6">
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && <div className="p-4 bg-red-100 text-red-600 rounded-lg">{error}</div>}
+              {success && <div className="p-4 bg-green-100 text-green-700 rounded-lg">{success}</div>}
+
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Nama Lengkap</label>
+                  <label className="block text-sm font-medium mb-2">Nama Lengkap</label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Nama Anda"
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full px-4 py-2 rounded-lg border"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                  <label className="block text-sm font-medium mb-2">Email</label>
                   <input
                     type="email"
-                    placeholder="email"
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email Anda"
+                    className="w-full px-4 py-2 rounded-lg border"
+                    required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Subjek</label>
+                <label className="block text-sm font-medium mb-2">Subjek</label>
                 <input
                   type="text"
-                  placeholder="Pertanyaan tentang..."
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="Topik pesan"
+                  className="w-full px-4 py-2 rounded-lg border"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Pesan</label>
+                <label className="block text-sm font-medium mb-2">Pesan</label>
                 <textarea
-                  placeholder="Tulis pesan Anda di sini..."
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="Tulis pesan Anda..."
                   rows={6}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                  className="w-full px-4 py-2 rounded-lg border"
+                  required
                 />
               </div>
 
@@ -122,7 +179,11 @@ export default function ContactPage() {
                 <input
                   type="checkbox"
                   id="privacy"
-                  className="w-4 h-4 rounded border-border bg-background text-primary focus:ring-2 focus:ring-primary/50"
+                  name="privacy"
+                  checked={formData.privacy}
+                  onChange={handleChange}
+                  className="w-4 h-4 border rounded"
+                  required
                 />
                 <label htmlFor="privacy" className="text-sm text-muted-foreground">
                   Saya setuju dengan{" "}
@@ -132,47 +193,11 @@ export default function ContactPage() {
                 </label>
               </div>
 
-              <Button size="lg" className="w-full gap-2">
+              <Button type="submit" size="lg" className="w-full gap-2">
                 <MessageSquare className="w-4 h-4" />
                 Kirim Pesan
               </Button>
             </form>
-          </div>
-        </section>
-
-        {/* Social Media Section */}
-        <section className="py-16 px-6 border-t border-border bg-primary/5">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-4">Ikuti Kami di Media Sosial</h2>
-            <p className="text-muted-foreground mb-8">
-              Dapatkan update berita terbaru dan join komunitas tech kami di media sosial.
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <a
-                href="#"
-                className="px-6 py-2 rounded-lg border border-primary/50 text-primary hover:bg-primary/10 transition-colors"
-              >
-                Twitter/X
-              </a>
-              <a
-                href="#"
-                className="px-6 py-2 rounded-lg border border-primary/50 text-primary hover:bg-primary/10 transition-colors"
-              >
-                LinkedIn
-              </a>
-              <a
-                href="#"
-                className="px-6 py-2 rounded-lg border border-primary/50 text-primary hover:bg-primary/10 transition-colors"
-              >
-                Instagram
-              </a>
-              <a
-                href="#"
-                className="px-6 py-2 rounded-lg border border-primary/50 text-primary hover:bg-primary/10 transition-colors"
-              >
-                YouTube
-              </a>
-            </div>
           </div>
         </section>
       </main>
